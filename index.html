@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ankieta Zdrowia – Klasa vs Polska 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#17a589;--teal2:#0e9176;--navy:#0d1b2a;--blue:#1a5276;
+  --amber:#e67e22;--red:#c0392b;--green:#1e8449;--purple:#7d3c98;
+  --bg:#f0f6fb;--card:#fff;--border:#dde8f0;--gray:#6c7a89;
+  --good:#1e8449;--warn:#d35400;--bad:#c0392b;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--navy);min-height:100vh}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0d1b2a 0%,#1a5276 60%,#17a589 100%);color:#fff;padding:1.5rem 1.5rem 1.2rem;text-align:center;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+.header h1{font-size:1.6rem;font-weight:900;line-height:1.2}
+.header h1 span{color:#48c9b0}
+.header p{margin-top:.4rem;font-size:.85rem;opacity:.8}
+.badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:.2rem .8rem;font-size:.75rem;margin-top:.5rem}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 1rem;overflow-x:auto;gap:.2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tab{padding:.7rem 1rem;font-weight:800;font-size:.82rem;cursor:pointer;border-bottom:3px solid transparent;color:#999;white-space:nowrap;transition:all .2s;font-family:'Nunito',sans-serif}
+.tab.active{color:var(--blue);border-bottom-color:var(--teal)}
+.tab:hover:not(.active){color:var(--navy)}
+
+.panel{display:none;padding:1.2rem;max-width:860px;margin:0 auto}
+.panel.active{display:block}
+
+/* CARDS */
+.q-card{background:var(--card);border-radius:16px;padding:1.3rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,.06);border-left:5px solid var(--teal)}
+.q-num{font-size:.72rem;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
+.q-tag{display:inline-block;background:#eaf2fb;color:var(--blue);font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:8px;margin-bottom:.6rem}
+.q-text{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:1rem;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:.4rem}
+.opt{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;border-radius:10px;border:2px solid var(--border);cursor:pointer;transition:all .15s;font-size:.88rem;font-weight:600}
+.opt:hover{border-color:var(--teal);background:#f0faf8}
+.opt.selected{border-color:var(--teal);background:#e0f7f4}
+.opt input{accent-color:var(--teal);width:15px;height:15px;flex-shrink:0}
+
+/* PROGRESS */
+.prog-wrap{margin-bottom:.8rem}
+.prog-bar{background:var(--border);border-radius:4px;height:5px;overflow:hidden}
+.prog-fill{background:linear-gradient(90deg,var(--teal),var(--blue));height:100%;border-radius:4px;transition:width .3s}
+.prog-text{font-size:.75rem;color:var(--gray);text-align:right;margin-bottom:.3rem}
+
+/* BUTTONS */
+.btn{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;border:none;padding:.8rem 2.2rem;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(23,165,137,.35);transition:all .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(23,165,137,.45)}
+.btn.red{background:linear-gradient(135deg,var(--red),#962d22);box-shadow:0 4px 14px rgba(192,57,43,.25)}
+.submit-area{text-align:center;padding:1.2rem 0 .5rem}
+.note{font-size:.75rem;color:#aaa;margin-top:.5rem}
+
+/* RESULTS */
+.live-counter{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+.counter-box{background:var(--card);border-radius:12px;padding:1rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);border-top:4px solid var(--teal)}
+.counter-box .num{font-size:2rem;font-weight:900;color:var(--teal)}
+.counter-box .lbl{font-size:.72rem;color:var(--gray);margin-top:.15rem}
+
+/* RESULT QUESTION CARD */
+.rq-card{background:var(--card);border-radius:16px;padding:1.3rem;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.rq-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap}
+.rq-title{font-size:.95rem;font-weight:800;color:var(--navy);flex:1}
+.legend-row{display:flex;gap:.8rem;font-size:.75rem;color:var(--gray);margin-bottom:.8rem;flex-wrap:wrap}
+.ldot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.25rem;vertical-align:middle}
+
+/* BAR ROWS */
+.bar-block{margin-bottom:.8rem}
+.bar-label{font-size:.82rem;font-weight:700;color:#444;margin-bottom:.25rem}
+.bar-pair{display:flex;flex-direction:column;gap:.2rem}
+.bar-row{display:flex;align-items:center;gap:.5rem}
+.bar-key{width:58px;font-size:.72rem;font-weight:700;flex-shrink:0;text-align:right}
+.bar-key.cls{color:var(--teal)}
+.bar-key.pl{color:var(--amber)}
+.bar-track{flex:1;height:22px;background:#eef3f8;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 .5rem;font-size:.73rem;font-weight:800;color:#fff;transition:width 1.2s cubic-bezier(.25,.46,.45,.94);min-width:3px}
+.bar-cls{background:linear-gradient(90deg,var(--teal),var(--teal2))}
+.bar-pl{background:linear-gradient(90deg,var(--amber),#d35400)}
+.bar-pct{width:32px;font-size:.78rem;font-weight:800;flex-shrink:0}
+.bar-pct.cls{color:var(--teal)}
+.bar-pct.pl{color:var(--amber)}
+
+/* STATUS CHIP */
+.status-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .7rem;border-radius:20px;font-size:.75rem;font-weight:800;margin-top:.6rem}
+.chip-good{background:#e8f8f0;color:var(--good)}
+.chip-warn{background:#fef5e4;color:var(--warn)}
+.chip-bad{background:#fdf0f0;color:var(--bad)}
+.chip-neutral{background:#eaf2fb;color:var(--blue)}
+
+/* RECOMMENDATION BOX */
+.rec-box{margin-top:.9rem;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.rec-head{padding:.6rem .9rem;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:.4rem}
+.rec-head.green{background:#e8f8f0;color:var(--green)}
+.rec-head.amber{background:#fef5e4;color:var(--warn)}
+.rec-head.red{background:#fdf0f0;color:var(--bad)}
+.rec-body{padding:.7rem .9rem;font-size:.82rem;color:#444;line-height:1.6;background:#fafcfe}
+.rec-body strong{color:var(--navy);font-weight:700}
+.rec-source{font-size:.72rem;color:var(--gray);margin-top:.4rem;font-style:italic}
+
+/* INFO BOX */
+.intro-box{background:linear-gradient(135deg,#e8f8f5,#eaf2fb);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1rem;font-size:.88rem;border-left:4px solid var(--teal);line-height:1.6}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:3rem 1rem;color:#bbb}
+.empty .icon{font-size:3rem;margin-bottom:.8rem}
+
+/* QR */
+.qr-box{background:var(--card);border-radius:18px;padding:1.8rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:1.2rem}
+.qr-box h2{font-size:1.2rem;font-weight:900;margin-bottom:.4rem}
+.qr-box p{font-size:.85rem;color:var(--gray);margin-bottom:1rem}
+#qr-wrap{margin:0 auto;display:inline-block;padding:.6rem;background:#fff;border-radius:12px;border:2px solid var(--border)}
+.url-box{background:#f4f8fb;border-radius:10px;padding:.8rem;margin-top:.8rem;font-family:monospace;font-size:.78rem;color:#555;word-break:break-all}
+.qr-input-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.qr-input{flex:1;padding:.6rem 1rem;border:2px solid var(--border);border-radius:10px;font-size:.88rem;min-width:180px;font-family:'Nunito',sans-serif}
+
+@media(max-width:500px){
+  .header h1{font-size:1.3rem}
+  .live-counter{grid-template-columns:repeat(3,1fr)}
+  .counter-box .num{font-size:1.5rem}
+  .bar-key{width:44px;font-size:.68rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🩺 Zdrowie klasy <span>vs Polska 2024</span></h1>
+  <p>Odpowiedz na pytania z Narodowego Testu Zdrowia Polaków 2024</p>
+  <span class="badge">Technik masażysty &bull; Edukacja zdrowotna</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('ankieta',this)">📝 Ankieta</div>
+  <div class="tab" onclick="switchTab('wyniki',this)">📊 Wyniki na żywo</div>
+  <div class="tab" onclick="switchTab('qr',this)">📱 Kod QR</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ ANKIETA -->
+<div id="tab-ankieta" class="panel active">
+  <div class="intro-box">
+    <strong>Odpowiedz szczerze na 12 pytań</strong> — identycznych z Narodowym Testem Zdrowia Polaków 2024 (150 000 respondentów). Zaraz zobaczysz, czy Twoje wyniki są powyżej czy poniżej średniej polskiej! 🇵🇱
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-text" id="prog-text">Udzielono 0 / 12 odpowiedzi</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Q1: Fast food -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 1 / 12</div>
+    <div class="q-tag">🍔 Dieta</div>
+    <div class="q-text">Jak często spożywasz produkty typu fast food?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q1" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q1" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q1" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q1" value="d" onchange="pick(this)"> Raz w miesiącu lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q1" value="e" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q2: Warzywa -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 2 / 12</div>
+    <div class="q-tag">🥦 Dieta</div>
+    <div class="q-text">Jak często jesz warzywa (bez ziemniaków i soków z koncentratów)?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q2" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q2" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q2" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q2" value="d" onchange="pick(this)"> Raz w miesiącu lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q2" value="e" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q3: Owoce -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 3 / 12</div>
+    <div class="q-tag">🍎 Dieta</div>
+    <div class="q-text">Jak często jesz owoce?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q3" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q3" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q3" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q3" value="d" onchange="pick(this)"> Raz w miesiącu lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q3" value="e" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q4: Napoje słodzone -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 4 / 12</div>
+    <div class="q-tag">🥤 Dieta</div>
+    <div class="q-text">Jak często pijesz napoje słodzone lub energetyzujące?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q4" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q4" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q4" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q4" value="d" onchange="pick(this)"> Raz w miesiącu lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q4" value="e" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q5: Sport -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 5 / 12</div>
+    <div class="q-tag">🏃 Aktywność fizyczna</div>
+    <div class="q-text">Ile czasu tygodniowo poświęcasz na uprawianie sportu lub ćwiczenia?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q5" value="a" onchange="pick(this)"> Ponad 3 godziny tygodniowo</label>
+      <label class="opt"><input type="radio" name="q5" value="b" onchange="pick(this)"> 2–3 godziny tygodniowo</label>
+      <label class="opt"><input type="radio" name="q5" value="c" onchange="pick(this)"> 1–2 godziny tygodniowo</label>
+      <label class="opt"><input type="radio" name="q5" value="d" onchange="pick(this)"> Mniej niż 1 godzina tygodniowo</label>
+      <label class="opt"><input type="radio" name="q5" value="e" onchange="pick(this)"> Wcale — nie uprawiam sportu</label>
+    </div>
+  </div>
+
+  <!-- Q6: Alkohol -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 6 / 12</div>
+    <div class="q-tag">🍺 Używki</div>
+    <div class="q-text">Jak często spożywasz alkohol?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q6" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q6" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q6" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q6" value="d" onchange="pick(this)"> Raz w miesiącu lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q6" value="e" onchange="pick(this)"> Nigdy — jestem abstynentem/ką</label>
+    </div>
+  </div>
+
+  <!-- Q7: Tyton -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 7 / 12</div>
+    <div class="q-tag">🚬 Używki</div>
+    <div class="q-text">Czy używasz wyrobów tytoniowych?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q7" value="a" onchange="pick(this)"> Nie — nigdy nie paliłem/am</label>
+      <label class="opt"><input type="radio" name="q7" value="b" onchange="pick(this)"> Nie — rzuciłem/am palenie</label>
+      <label class="opt"><input type="radio" name="q7" value="c" onchange="pick(this)"> Tak — tradycyjne papierosy (nałogowo)</label>
+      <label class="opt"><input type="radio" name="q7" value="d" onchange="pick(this)"> Tak — e-papierosy / liquidy</label>
+      <label class="opt"><input type="radio" name="q7" value="e" onchange="pick(this)"> Tak — tytoń podgrzewany (IQOS itp.)</label>
+      <label class="opt"><input type="radio" name="q7" value="f" onchange="pick(this)"> Tak — okazjonalnie (różne wyroby)</label>
+    </div>
+  </div>
+
+  <!-- Q8: Stres -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 8 / 12</div>
+    <div class="q-tag">🧠 Zdrowie psychiczne</div>
+    <div class="q-text">Jak często doznajesz stresujących sytuacji?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q8" value="a" onchange="pick(this)"> Codziennie</label>
+      <label class="opt"><input type="radio" name="q8" value="b" onchange="pick(this)"> Kilka razy w tygodniu</label>
+      <label class="opt"><input type="radio" name="q8" value="c" onchange="pick(this)"> Kilka razy w miesiącu</label>
+      <label class="opt"><input type="radio" name="q8" value="d" onchange="pick(this)"> Rzadko lub prawie nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q9: Morfologia -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 9 / 12</div>
+    <div class="q-tag">🔬 Profilaktyka</div>
+    <div class="q-text">Czy w ciągu ostatnich 12 miesięcy wykonałeś/aś morfologię krwi?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q9" value="a" onchange="pick(this)"> Tak</label>
+      <label class="opt"><input type="radio" name="q9" value="b" onchange="pick(this)"> Nie, ale mam zaplanowane</label>
+      <label class="opt"><input type="radio" name="q9" value="c" onchange="pick(this)"> Nie</label>
+      <label class="opt"><input type="radio" name="q9" value="d" onchange="pick(this)"> Nigdy tego nie robiłem/am</label>
+    </div>
+  </div>
+
+  <!-- Q10: Ciśnienie -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 10 / 12</div>
+    <div class="q-tag">❤️ Profilaktyka</div>
+    <div class="q-text">Czy w ciągu ostatnich 12 miesięcy mierzyłeś/aś ciśnienie krwi?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q10" value="a" onchange="pick(this)"> Tak</label>
+      <label class="opt"><input type="radio" name="q10" value="b" onchange="pick(this)"> Nie, ale mam zaplanowane</label>
+      <label class="opt"><input type="radio" name="q10" value="c" onchange="pick(this)"> Nie</label>
+      <label class="opt"><input type="radio" name="q10" value="d" onchange="pick(this)"> Nigdy tego nie robiłem/am</label>
+    </div>
+  </div>
+
+  <!-- Q11: Samobadanie -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 11 / 12</div>
+    <div class="q-tag">🎗️ Profilaktyka nowotworowa</div>
+    <div class="q-text">Jak często wykonujesz samobadanie piersi / jąder?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q11" value="a" onchange="pick(this)"> Co miesiąc lub częściej</label>
+      <label class="opt"><input type="radio" name="q11" value="b" onchange="pick(this)"> Kilka razy w roku</label>
+      <label class="opt"><input type="radio" name="q11" value="c" onchange="pick(this)"> Raz w roku lub rzadziej</label>
+      <label class="opt"><input type="radio" name="q11" value="d" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <!-- Q12: Filtr UV -->
+  <div class="q-card">
+    <div class="q-num">Pytanie 12 / 12</div>
+    <div class="q-tag">☀️ Profilaktyka nowotworowa</div>
+    <div class="q-text">Czy używasz kremów z filtrem UV, gdy jesteś narażony/a na słońce?</div>
+    <div class="options">
+      <label class="opt"><input type="radio" name="q12" value="a" onchange="pick(this)"> Tak, zawsze</label>
+      <label class="opt"><input type="radio" name="q12" value="b" onchange="pick(this)"> Tak, często</label>
+      <label class="opt"><input type="radio" name="q12" value="c" onchange="pick(this)"> Czasem</label>
+      <label class="opt"><input type="radio" name="q12" value="d" onchange="pick(this)"> Rzadko</label>
+      <label class="opt"><input type="radio" name="q12" value="e" onchange="pick(this)"> Nigdy</label>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="btn" onclick="submitSurvey()">✅ Oddaj odpowiedzi i porównaj z Polską!</button>
+    <p class="note">Odpowiedzi są anonimowe i zapisywane lokalnie w przeglądarce</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ WYNIKI -->
+<div id="tab-wyniki" class="panel">
+  <div id="res-empty" class="empty">
+    <div class="icon">📊</div>
+    <p style="font-weight:800;font-size:1rem;color:#888">Wypełnij najpierw ankietę!</p>
+    <p style="font-size:.85rem;margin-top:.3rem;color:#bbb">Wyniki klasy pojawią się tutaj po zebraniu odpowiedzi.</p>
+  </div>
+  <div id="res-content" style="display:none"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ QR -->
+<div id="tab-qr" class="panel">
+  <div class="qr-box">
+    <h2>📱 Wygeneruj kod QR dla uczniów</h2>
+    <p>Wklej link do swojej ankiety (np. z Netlify) i wygeneruj kod QR do wyświetlenia na projektorze</p>
+    <div class="qr-input-row">
+      <input type="url" id="qr-input" class="qr-input" placeholder="https://twoj-link.netlify.app">
+      <button class="btn" onclick="makeQR()" style="padding:.6rem 1.5rem">Generuj QR</button>
+    </div>
+    <div id="qr-wrap"></div>
+    <div class="url-box" id="qr-url" style="display:none"></div>
+  </div>
+  <div style="background:var(--card);border-radius:14px;padding:1.2rem;border:1px solid var(--border)">
+    <p style="font-size:.85rem;font-weight:800;margin-bottom:.5rem">🚀 Jak uruchomić QR w 60 sekund:</p>
+    <p style="font-size:.83rem;color:var(--gray);line-height:1.7">
+      1. Pobierz plik <strong>index.html</strong><br>
+      2. Utwórz folder na pulpicie, wrzuć plik do środka<br>
+      3. Wejdź na <strong>app.netlify.com/drop</strong><br>
+      4. Przeciągnij <strong>cały folder</strong> (nie sam plik!) na stronę<br>
+      5. Skopiuj wygenerowany link i wklej powyżej → kliknij Generuj QR
+    </p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ─── STATE ────────────────────────────────────────────────────────
+let answers = {};
+let responses = JSON.parse(localStorage.getItem('ntzp_v3') || '[]');
+
+// ─── NTZP 2024 DATA ───────────────────────────────────────────────
+const PL = {
+  q1:  {a:0, b:5,  c:19, d:56, e:17},   // fast food (0=codziennie pominięty)
+  q2:  {a:37,b:41, c:17, d:4,  e:1},    // warzywa
+  q3:  {a:36,b:43, c:15, d:4,  e:1},    // owoce
+  q4:  {a:11,b:12, c:18, d:30, e:29},   // napoje słodzone
+  q5:  {a:13,b:15, c:15, d:10, e:47},   // sport
+  q6:  {a:7, b:16, c:28, d:25, e:24},   // alkohol
+  q7:  {a:41,b:28, c:20, d:8,  e:5, f:7}, // tyton
+  q8:  {a:24,b:30, c:30, d:16},          // stres
+  q9:  {a:71,b:11, c:11, d:7},           // morfologia
+  q10: {a:84,b:6,  c:7,  d:3},           // ciśnienie
+  q11: {a:24,b:18, c:7,  d:39},          // samobadanie (kobiety dane)
+  q12: {a:20,b:20, c:22, d:21, e:20},    // filtr UV
+};
+
+const LABELS = {
+  q1:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Raz/mies lub rzadziej','Nigdy'],
+  q2:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Raz/mies lub rzadziej','Nigdy'],
+  q3:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Raz/mies lub rzadziej','Nigdy'],
+  q4:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Raz/mies lub rzadziej','Nigdy'],
+  q5:  ['Ponad 3h/tyg','2–3h/tyg','1–2h/tyg','Mniej niż 1h/tyg','Wcale'],
+  q6:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Raz/mies lub rzadziej','Nigdy'],
+  q7:  ['Nie — nigdy','Rzucił/am','Tradycyjne (nałóg)','E-papierosy','Tytoń podgrzewany','Okazjonalnie'],
+  q8:  ['Codziennie','Kilka razy/tyg','Kilka razy/mies','Rzadko/Nigdy'],
+  q9:  ['Tak','Nie (planuje)','Nie','Nigdy'],
+  q10: ['Tak','Nie (planuje)','Nie','Nigdy'],
+  q11: ['Co miesiąc+','Kilka razy/rok','Raz/rok lub rzadziej','Nigdy'],
+  q12: ['Zawsze','Często','Czasem','Rzadko','Nigdy'],
+};
+
+const TITLES = {
+  q1:'Fast food', q2:'Spożywanie warzyw', q3:'Spożywanie owoców',
+  q4:'Napoje słodzone / energetyki', q5:'Aktywność fizyczna',
+  q6:'Spożywanie alkoholu', q7:'Używanie tytoniu', q8:'Częstotliwość stresu',
+  q9:'Morfologia krwi (ostatnie 12 mies.)', q10:'Pomiar ciśnienia (ostatnie 12 mies.)',
+  q11:'Samobadanie piersi / jąder', q12:'Krem z filtrem UV',
+};
+
+// Status: dla każdego pytania — które odpowiedzi są "dobre" (g), "ostrzegawcze" (w), "złe" (b)
+const STATUS = {
+  q1:  {g:['d','e'], w:['c'], b:['a','b']},
+  q2:  {g:['a'], w:['b'], b:['c','d','e']},
+  q3:  {g:['a'], w:['b'], b:['c','d','e']},
+  q4:  {g:['e','d'], w:['c'], b:['a','b']},
+  q5:  {g:['a','b'], w:['c'], b:['d','e']},
+  q6:  {g:['e'], w:['d','c'], b:['a','b']},
+  q7:  {g:['a','b'], w:['f'], b:['c','d','e']},
+  q8:  {g:['d'], w:['c'], b:['a','b']},
+  q9:  {g:['a'], w:['b'], b:['c','d']},
+  q10: {g:['a'], w:['b'], b:['c','d']},
+  q11: {g:['a'], w:['b'], b:['c','d']},
+  q12: {g:['a','b'], w:['c'], b:['d','e']},
+};
+
+// Zalecenia eksperckie przy każdym pytaniu
+const RECS = {
+  q1: {
+    color:'amber',
+    icon:'⚠️',
+    title:'Zalecenie WHO / ekspertów',
+    text:'Żywność fast food jest wysokokaloryczna i uboga w składniki odżywcze. Zawiera duże ilości soli, cukru i nasyconych tłuszczów. <strong>WHO zaleca ograniczenie spożycia do minimum</strong> — najlepiej do okazjonalnego (raz w miesiącu lub rzadziej). Regularne spożywanie fast foodów zwiększa ryzyko otyłości, cukrzycy, chorób serca i nadciśnienia.',
+    source:'Źródło: WHO Healthy Diet fact sheet; NTZP 2024'
+  },
+  q2: {
+    color:'green',
+    icon:'✅',
+    title:'Zalecenie WHO',
+    text:'<strong>WHO zaleca spożywanie minimum 400 g warzyw i owoców dziennie</strong>, co odpowiada 5 porcjom. Codzienne jedzenie warzyw zmniejsza ryzyko chorób serca, udaru, cukrzycy typu 2 i niektórych nowotworów. W Polsce tylko 37% osób je warzywa codziennie — to jeden z kluczowych problemów zdrowotnych.',
+    source:'Źródło: WHO Healthy Diet 2020; NTZP 2024'
+  },
+  q3: {
+    color:'green',
+    icon:'✅',
+    title:'Zalecenie WHO',
+    text:'<strong>Owoce powinny stanowić część codziennej diety</strong> — razem z warzywami minimum 400 g dziennie (5 porcji). Owoce dostarczają witamin, błonnika i antyoksydantów. Uwaga: soki owocowe nie zastępują świeżych owoców — zawierają dużo cukru i mało błonnika.',
+    source:'Źródło: WHO Healthy Diet 2020; NTZP 2024'
+  },
+  q4: {
+    color:'red',
+    icon:'🚨',
+    title:'Zalecenie WHO — podatek cukrowy',
+    text:'<strong>WHO zaleca ograniczenie spożycia wolnych cukrów do poniżej 10% dziennego spożycia energii</strong> (najlepiej poniżej 5%). Jedna puszka napoju słodzonego (330 ml) zawiera ok. 35 g cukru — czyli ok. 7 łyżeczek. Napoje energetyzujące dodatkowo zawierają kofeinę i taurynę, które w nadmiarze są szkodliwe dla serca. W Polsce w 2021 r. wprowadzono podatek cukrowy.',
+    source:'Źródło: WHO Sugar intake guideline 2015; NTZP 2024'
+  },
+  q5: {
+    color:'amber',
+    icon:'⚠️',
+    title:'Zalecenie WHO — aktywność fizyczna',
+    text:'<strong>WHO zaleca dorosłym minimum 150–300 minut umiarkowanej aktywności fizycznej tygodniowo</strong> (lub 75–150 min intensywnej). To ok. 30 min dziennie przez 5 dni. W Polsce 47% dorosłych nie uprawia żadnego sportu — to jeden z 4 głównych czynników ryzyka chorób cywilizacyjnych. Masaż jako zawód fizjoterapeutyczny wpisuje się bezpośrednio w ten obszar profilaktyki.',
+    source:'Źródło: WHO Physical Activity Guidelines 2020; NTZP 2024'
+  },
+  q6: {
+    color:'red',
+    icon:'🚨',
+    title:'Zalecenie WHO — nie ma bezpiecznej dawki alkoholu',
+    text:'<strong>Nie istnieje bezpieczna dawka alkoholu.</strong> WHO w 2023 roku jednoznacznie potwierdziło: każda ilość alkoholu — nawet niewielka — zwiększa ryzyko nowotworów, chorób serca, wątroby i mózgu. Alkohol jest uznawany za jedną z głównych przyczyn przedwczesnych zgonów w Polsce. 76% Polaków pije alkohol, a 7% sięga po niego codziennie.',
+    source:'Źródło: WHO — No safe level of alcohol consumption (2023); NTZP 2024'
+  },
+  q7: {
+    color:'red',
+    icon:'🚨',
+    title:'Zalecenie WHO — wyroby tytoniowe',
+    text:'<strong>Wyroby tytoniowe — w tym e-papierosy i tytoń podgrzewany — nie są bezpieczne.</strong> Zawierają substancje rakotwórcze i uzależniającą nikotynę. E-papierosy i tytoń podgrzewany NIE są alternatywą dla tradycyjnych papierosów — młodzi często traktują je jako dodatek. W Polsce 27% to czynni palacze, a wśród młodych palaczy 18–24 lat aż 73% używa e-papierosów (+13 pp. w ciągu roku).',
+    source:'Źródło: WHO Tobacco fact sheet 2023; NTZP 2024'
+  },
+  q8: {
+    color:'amber',
+    icon:'⚠️',
+    title:'Zalecenie ekspertów — stres przewlekły',
+    text:'<strong>Przewlekły stres jest czynnikiem ryzyka chorób serca, nadciśnienia, depresji i osłabienia odporności.</strong> 98% Polaków doświadcza stresu — 24% codziennie. Masaż relaksacyjny jest udokumentowaną interwencją obniżającą poziom kortyzolu i redukującą stres. Zalecane metody radzenia sobie: aktywność fizyczna, techniki oddechowe, kontakty społeczne, psychoterapia.',
+    source:'Źródło: APA Stress in America 2023; NTZP 2024'
+  },
+  q9: {
+    color:'green',
+    icon:'✅',
+    title:'Zalecenie ekspertów — morfologia krwi',
+    text:'<strong>Morfologia krwi powinna być wykonywana co najmniej raz w roku</strong> przez każdego dorosłego. Pozwala wykryć anemię, infekcje, choroby układu odpornościowego i wiele innych schorzeń na wczesnym etapie. W Polsce 71% wykonało ją w ostatnim roku — najlepszy wynik w historii NTZP. Główny powód nierobienia badania: "nie miałem/am potrzeby" (80% przypadków).',
+    source:'Źródło: Polskie Towarzystwo Diagnostyki Laboratoryjnej; NTZP 2024'
+  },
+  q10: {
+    color:'green',
+    icon:'✅',
+    title:'Zalecenie ekspertów — ciśnienie krwi',
+    text:'<strong>Pomiar ciśnienia krwi powinien być wykonywany regularnie, minimum raz w roku.</strong> Co trzeci dorosły Polak ma nadciśnienie tętnicze (33%) — często nie wiedząc o tym, bo choroba przebiega bezobjawowo. Wczesne wykrycie nadciśnienia pozwala uniknąć udaru, zawału i choroby nerek. 84% Polaków mierzyło ciśnienie w ostatnim roku.',
+    source:'Źródło: PTK — Wytyczne dotyczące nadciśnienia tętniczego; NTZP 2024'
+  },
+  q11: {
+    color:'amber',
+    icon:'⚠️',
+    title:'Zalecenie onkologów — samobadanie',
+    text:'<strong>Samobadanie piersi powinno być wykonywane co miesiąc</strong> — najlepiej kilka dni po miesiączce. Samobadanie jąder również co miesiąc, najlepiej po ciepłej kąpieli. To podstawowa i darmowa forma profilaktyki nowotworowej, która pozwala wykryć niepokojące zmiany we wczesnym stadium. W Polsce 39% kobiet nigdy nie wykonuje samobadania piersi.',
+    source:'Źródło: Polskie Towarzystwo Onkologiczne; NTZP 2024'
+  },
+  q12: {
+    color:'amber',
+    icon:'⚠️',
+    title:'Zalecenie dermatologów — filtr UV',
+    text:'<strong>Krem z filtrem SPF 30 lub wyższym powinien być stosowany zawsze przy ekspozycji na słońce</strong> — nie tylko latem i nie tylko na plaży. Promieniowanie UV jest głównym czynnikiem ryzyka czerniaka i innych nowotworów skóry. Tylko 20% Polaków zawsze stosuje filtr UV. 35% osób ze znamionami skórnymi nigdy ich nie kontroluje u dermatologa.',
+    source:'Źródło: PTD — Zalecenia dotyczące fotoprotekcji; NTZP 2024'
+  },
+};
+
+// ─── SURVEY LOGIC ──────────────────────────────────────────────────
+function pick(radio) {
+  radio.closest('.q-card').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  radio.closest('.opt').classList.add('selected');
+  answers[radio.name] = radio.value;
+  const n = Object.keys(answers).length;
+  document.getElementById('prog-text').textContent = `Udzielono ${n} / 12 odpowiedzi`;
+  document.getElementById('prog-fill').style.width = (n / 12 * 100) + '%';
+}
+
+function submitSurvey() {
+  const missing = [];
+  for (let i = 1; i <= 12; i++) if (!answers['q'+i]) missing.push(i);
+  if (missing.length) { alert('Brakujące odpowiedzi: pytania ' + missing.join(', ')); return; }
+  responses.push({...answers, ts: Date.now()});
+  localStorage.setItem('ntzp_v3', JSON.stringify(responses));
+  document.querySelector('.tab[onclick*="wyniki"]').click();
+}
+
+// ─── RESULTS ───────────────────────────────────────────────────────
+function getStatus(qk, val) {
+  const s = STATUS[qk];
+  if (s.g.includes(val)) return 'good';
+  if (s.w.includes(val)) return 'warn';
+  return 'bad';
+}
+
+function statusChip(st) {
+  if (st === 'good') return '<span class="status-chip chip-good">✓ Powyżej średniej / w normie</span>';
+  if (st === 'warn') return '<span class="status-chip chip-warn">~ Na poziomie średniej krajowej</span>';
+  return '<span class="status-chip chip-bad">↓ Poniżej zaleceń / do poprawy</span>';
+}
+
+function renderResults() {
+  const n = responses.length;
+  const empty = document.getElementById('res-empty');
+  const content = document.getElementById('res-content');
+  if (n === 0) { empty.style.display='block'; content.style.display='none'; return; }
+  empty.style.display = 'none';
+  content.style.display = 'block';
+
+  // Compute class dominant answer for status chip
+  function dominant(qk) {
+    const keys = Object.keys(PL[qk]);
+    let best = keys[0], bestN = 0;
+    keys.forEach(k => {
+      const cnt = responses.filter(r => r[qk] === k).length;
+      if (cnt > bestN) { bestN = cnt; best = k; }
+    });
+    return best;
+  }
+
+  let html = `
+    <div class="live-counter">
+      <div class="counter-box"><div class="num" id="cnt-n">${n}</div><div class="lbl">Odpowiedzi klasy</div></div>
+      <div class="counter-box" style="border-top-color:var(--amber)"><div class="num" style="color:var(--amber)">150k</div><div class="lbl">Respondentów NTZP 2024</div></div>
+      <div class="counter-box" style="border-top-color:var(--purple)"><div class="num" style="color:var(--purple)">12</div><div class="lbl">Pytań z raportu</div></div>
+    </div>
+    <div class="legend-row">
+      <span><span class="ldot" style="background:var(--teal)"></span>Wasza klasa</span>
+      <span><span class="ldot" style="background:var(--amber)"></span>Polska NTZP 2024</span>
+    </div>
+  `;
+
+  for (let qi = 1; qi <= 12; qi++) {
+    const qk = 'q' + qi;
+    const plData = PL[qk];
+    const opts = Object.keys(plData);
+    const lbls = LABELS[qk];
+    const rec = RECS[qk];
+    const dom = dominant(qk);
+    const st = getStatus(qk, dom);
+
+    let barsHtml = '';
+    opts.forEach((k, idx) => {
+      const cnt = responses.filter(r => r[qk] === k).length;
+      const cp = n > 0 ? Math.round(cnt / n * 100) : 0;
+      const pp = plData[k];
+      barsHtml += `
+        <div class="bar-block">
+          <div class="bar-label">${lbls[idx]}</div>
+          <div class="bar-pair">
+            <div class="bar-row">
+              <div class="bar-key cls">Klasa</div>
+              <div class="bar-track"><div class="bar-fill bar-cls" style="width:${cp}%;min-width:${cp>0?'4px':'0'}">${cp>10?cp+'%':''}</div></div>
+              <div class="bar-pct cls">${cp}%</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-key pl">Polska</div>
+              <div class="bar-track"><div class="bar-fill bar-pl" style="width:${pp}%;min-width:${pp>0?'4px':'0'}">${pp>10?pp+'%':''}</div></div>
+              <div class="bar-pct pl">${pp}%</div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += `
+      <div class="rq-card">
+        <div class="rq-head">
+          <div class="rq-title">📌 ${TITLES[qk]}</div>
+          ${statusChip(st)}
+        </div>
+        ${barsHtml}
+        <div class="rec-box">
+          <div class="rec-head ${rec.color}">${rec.icon} ${rec.title}</div>
+          <div class="rec-body">${rec.text}<div class="rec-source">${rec.source}</div></div>
+        </div>
+      </div>`;
+  }
+
+  html += `
+    <div style="text-align:center;padding:1rem 0 2rem">
+      <button class="btn red" onclick="clearAll()">🗑 Wyczyść odpowiedzi i zacznij od nowa</button>
+    </div>`;
+
+  content.innerHTML = html;
+
+  // Animate bars
+  setTimeout(() => {
+    content.querySelectorAll('.bar-fill').forEach(b => {
+      const w = b.style.width; b.style.width = '0';
+      requestAnimationFrame(() => { setTimeout(() => { b.style.width = w; }, 50); });
+    });
+  }, 100);
+}
+
+function clearAll() {
+  if (!confirm('Usunąć wszystkie odpowiedzi klasy?')) return;
+  responses = []; localStorage.removeItem('ntzp_v3');
+  answers = {};
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('prog-text').textContent = 'Udzielono 0 / 12 odpowiedzi';
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('res-content').style.display = 'none';
+  document.getElementById('res-empty').style.display = 'block';
+  document.querySelector('.tab[onclick*="ankieta"]').click();
+}
+
+// ─── TABS ──────────────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if (el) el.classList.add('active');
+  if (name === 'wyniki') renderResults();
+}
+
+// ─── QR ────────────────────────────────────────────────────────────
+function makeQR() {
+  const url = document.getElementById('qr-input').value.trim();
+  if (!url) { alert('Wklej URL!'); return; }
+  const wrap = document.getElementById('qr-wrap');
+  wrap.innerHTML = '';
+  new QRCode(wrap, { text:url, width:220, height:220, colorDark:'#0d1b2a', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M });
+  const box = document.getElementById('qr-url');
+  box.style.display = 'block'; box.textContent = url;
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────
+if (responses.length > 0) {
+  document.getElementById('res-empty').innerHTML = `
+    <div class="icon">📊</div>
+    <p style="font-weight:800;font-size:1rem;color:#888">${responses.length} odpowiedzi w bazie.</p>
+    <button class="btn" style="margin-top:1rem" onclick="document.querySelector('.tab[onclick*=wyniki]').click()">Pokaż wyniki klasy</button>`;
+}
+</script>
+</body>
+</html>
